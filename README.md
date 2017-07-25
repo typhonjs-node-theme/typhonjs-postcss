@@ -1,2 +1,2 @@
 # typhonjs-postcss
-Provides plugin integration for PostCSS.
+Provides TyphonJS plugin and event binding integration for PostCSS.
