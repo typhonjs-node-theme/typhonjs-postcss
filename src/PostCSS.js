@@ -121,15 +121,17 @@ export default class PostCSS
    /**
     * Creates a CSS entry by name which can be further modified before finalization
     *
-    * @param {string}   name - CSS data is appended to the given CSS entry.
+    * @param {string}         name - CSS data is appended to the given CSS entry.
     *
-    * @param {string}   [to] - Source map destination.
+    * @param {string}         [to] - Source map destination.
     *
-    * @param {string}   [map=true] - Enables source map tracking.
+    * @param {boolean|object} [map=true] - Enables source map tracking; see full PostCSS source map options.
     *
-    * @param {Array<object>} [processors] - An array of PostCSS processing plugins to apply upon finalization.
+    * @param {Array<object>}  [processors] - An array of PostCSS processing plugins to apply upon finalization.
     *
-    * @param {boolean}  [silent=false] - When true any logging is skipped.
+    * @param {boolean}        [silent=false] - When true any logging is skipped.
+    *
+    * @see https://github.com/postcss/postcss/blob/master/docs/source-maps.md
     */
    create({ name, to = 'unknown', map = true, processors = [], silent = false } = {})
    {
@@ -179,7 +181,7 @@ export default class PostCSS
 
       if (entry.processors.length)
       {
-         result = await postcss(entry.processors).process(result);
+         result = await postcss(entry.processors).process(result, { to: entry.to });
       }
 
       this._cssEntries.delete(name);
@@ -196,16 +198,16 @@ export default class PostCSS
     */
    async finalizeAll({ silent = false } = {})
    {
-      const result = [];
+      const results = [];
 
       for (const name of this._cssEntries.keys())
       {
-         const css = await this.finalize({ name, silent });
+         const data = await this.finalize({ name, silent });
 
-         result.push({ name, fileData: css });
+         results.push({ name, data });
       }
 
-      return result;
+      return results;
    }
 
    /**

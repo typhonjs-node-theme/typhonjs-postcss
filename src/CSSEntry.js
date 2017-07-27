@@ -20,7 +20,7 @@ export default class CSSEntry
       {
          if (typeof entry === 'object')
          {
-            if (entry.instance === 'object')
+            if (typeof entry.instance === 'object' || typeof entry.instance === 'function')
             {
                return entry.instance;
             }
